@@ -24,6 +24,38 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  .back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-decoration: none;
+    padding: 10px 18px;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .back-btn:hover {
+    border-color: var(--gold);
+    background: rgba(10, 10, 15, 0.95);
+  }
+
+  .back-btn .arrow {
+    font-size: 14px;
+    transition: transform 0.3s;
+  }
+
+  .back-btn:hover .arrow { transform: translateX(-4px); }
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -609,6 +641,8 @@
 </head>
 <body>
 
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
 <div class="grid-bg"></div>
 
 <div class="particles" id="particles"></div>
@@ -622,7 +656,7 @@
       <div class="line2">THE CHUNK</div>
       <div class="line3">WINS $1,000</div>
     </h1>
-    <div class="header-sub">A <span>Chronis</span> PRODUCTION</div>
+    <div class="header-sub">A <span>RENHATESCODE</span> PRODUCTION</div>
   </div>
 
   <div class="info-grid fade-in">
@@ -869,7 +903,7 @@
   // ============================================
   // PASTE YOUR DISCORD WEBHOOK URL BELOW
   // ============================================
-  const WEBHOOK_URL = 'https://ptb.discord.com/api/webhooks/1495556754388287569/LB4C8mDg9Q9I8a0d8dxkiiSBZ2kLYXgmM7Rsy7yuDQW0f_MUOQ9b35UGsG21UU_F1K9E';
+  const WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE';
   // ============================================
 
   // Particles
