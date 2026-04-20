@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONIS — Dev Diary</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.devlog-list{margin-top:48px;display:flex;flex-direction:column;gap:20px}
+.devlog-entry{background:var(--surface);border:1px solid var(--border);padding:32px;backdrop-filter:blur(8px);transition:all .4s;position:relative}
+.devlog-entry:hover{border-color:var(--border-hover)}
+.devlog-entry::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transition:transform .3s;transform-origin:top}
+.devlog-entry:hover::before{transform:scaleY(1)}
+.devlog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.devlog-date{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--text-muted)}
+.devlog-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;padding:4px 12px;border:1px solid}
+.devlog-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:14px}
+.devlog-body{font-size:14px;font-weight:300;line-height:2;color:var(--text-dim)}
+.devlog-body strong{color:var(--gold);font-weight:500}
+.devlog-body em{color:var(--cyan)}
+.devlog-divider{height:1px;background:var(--border);margin:12px 0}
+.empty-note{text-align:center;padding:60px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:2px;border:1px dashed var(--border);margin-top:48px}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="page-transition" id="pageTransition"></div>
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
+<div class="container">
+  <div class="pg-header rv">
+    <div class="pg-badge">TRANSMISSION LOG</div>
+    <h1 class="pg-title">DEV DIARY</h1>
+    <p class="pg-sub">Updates from the frontlines of development. What we're building, breaking, and learning.</p>
+  </div>
+
+  <!--
+    ====================================
+    HOW TO ADD A NEW DEV LOG ENTRY:
+    Copy a devlog-entry block and paste
+    it at the TOP of the devlog-list div.
+    Newest entries should be first.
+    ====================================
+  -->
+
+  <div class="devlog-list">
+    <div class="devlog-entry rv">
+      <div class="devlog-meta">
+        <span class="devlog-date">APR 20, 2026</span>
+        <span class="devlog-tag tag-dev">WEBSITE</span>
+      </div>
+      <div class="devlog-title">THE SITE IS LIVE</div>
+      <div class="devlog-body">
+        The Chronis website is officially live. 13+ pages, a full ARG system with 27 dossier entries, and enough hidden content to keep people busy for weeks. The foundation is set.<br><br>
+        Next up: <strong>more lore drops</strong>, the first real YouTube content, and getting <em>Chronis: Omega</em> prototyping off the ground in UE5.<br><br>
+        If you're reading this, you're early. That matters.
+      </div>
+    </div>
+
+    <div class="devlog-entry rv rv-d1">
+      <div class="devlog-meta">
+        <span class="devlog-date">APR 2026</span>
+        <span class="devlog-tag tag-dev">GAME DEV</span>
+      </div>
+      <div class="devlog-title">CHRONIS: OMEGA — EARLY PROTOTYPING</div>
+      <div class="devlog-body">
+        We're in the earliest stages of <strong>Chronis: Omega</strong> — the flagship title. Right now it's all about establishing the C++/Blueprint hybrid architecture in UE5, testing movement systems, and blocking out the first environment.<br><br>
+        The lore bible is written. The universe exists on paper. Now we make it real.<br><br>
+        Simultaneously, <strong>Case 404: The Watson Incident</strong> continues active development — sanity systems, cycle-based level streaming, and the AI behavior tree for The Watcher are all in progress.
+      </div>
+    </div>
+
+    <div class="devlog-entry rv rv-d2">
+      <div class="devlog-meta">
+        <span class="devlog-date">Q1 2026</span>
+        <span class="devlog-tag tag-done">MILESTONE</span>
+      </div>
+      <div class="devlog-title">TIMEBORNE INTERACTIVE — FORMED</div>
+      <div class="devlog-body">
+        The team came together. <strong>Ren</strong> (Founder & Lead Dev), <strong>Wiggle</strong> (Creative Director), <strong>Miistakaki</strong> (Writer), and <strong>Jolion</strong> (Lead Programmer).<br><br>
+        The Chronis universe lore bible was established. Discord community launched. The pipeline is set. Now we build.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+</body>
+</html>

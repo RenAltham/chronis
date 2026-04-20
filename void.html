@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<style>
+*{margin:0;padding:0}body{background:#000;min-height:100vh;cursor:none;overflow:hidden;user-select:none}
+.void-text{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;opacity:0;transition:opacity 8s;font-family:serif;pointer-events:none}
+.void-text.show{opacity:1}
+.v1{color:#111;font-size:14px;font-style:italic;letter-spacing:4px;transition-delay:0s}
+.v2{color:#0a0a0a;font-size:11px;letter-spacing:6px;margin-top:40px;transition-delay:4s}
+.v3{color:#080808;font-size:10px;letter-spacing:3px;margin-top:20px;font-family:monospace;transition-delay:8s}
+.v4{color:#ff2d55;font-size:9px;letter-spacing:5px;margin-top:60px;font-family:monospace;transition-delay:16s;opacity:0;transition:opacity 4s 16s}
+.void-text.show .v4{opacity:1}
+.heartbeat{position:fixed;top:50%;left:50%;width:4px;height:4px;background:#ff2d55;border-radius:50%;transform:translate(-50%,-50%);opacity:0;pointer-events:none}
+.heartbeat.pulse{animation:hb 2s ease-out forwards}
+@keyframes hb{0%{opacity:0;width:4px;height:4px;box-shadow:none}10%{opacity:.4;width:4px;height:4px;box-shadow:0 0 4px #ff2d55}50%{opacity:.1;width:200px;height:200px;box-shadow:0 0 60px #ff2d55}100%{opacity:0;width:400px;height:400px}}
+</style>
+</head>
+<body>
+<div class="void-text" id="voidText">
+  <div class="v1">you found the void.</div>
+  <div class="v2">THERE IS NOTHING HERE.</div>
+  <div class="v3">...or is there?</div>
+  <div class="v4">DOSSIER CODE: VOIDWALKER</div>
+</div>
+<div class="heartbeat" id="heartbeat"></div>
+<script>
+// Wait 60 seconds of pure black, then reveal text
+setTimeout(()=>document.getElementById('voidText').classList.add('show'),60000);
+// Heartbeat every 47 seconds (Sherry's frequency interval)
+setInterval(()=>{const h=document.getElementById('heartbeat');h.classList.remove('pulse');void h.offsetWidth;h.classList.add('pulse')},47000);
+// If user clicks anywhere, speed it up
+let clicks=0;
+document.addEventListener('click',()=>{clicks++;if(clicks>=5)document.getElementById('voidText').classList.add('show')});
+// Hidden: pressing V-O-I-D reveals instantly
+let voidCode='';
+document.addEventListener('keydown',e=>{voidCode+=e.key.toLowerCase();if(voidCode.includes('void'))document.getElementById('voidText').classList.add('show');if(voidCode.length>10)voidCode=voidCode.slice(-4)});
+</script>
+</body>
+</html>

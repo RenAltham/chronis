@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONIS — Character Codex</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.codex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-top:48px}
+.char-card{background:var(--surface);border:1px solid var(--border);padding:0;overflow:hidden;transition:all .5s;backdrop-filter:blur(8px);cursor:pointer;position:relative}
+.char-card:hover{border-color:var(--border-hover);transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.char-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent,var(--gold)),transparent);opacity:0;transition:opacity .4s}
+.char-card:hover::before{opacity:1}
+.char-banner{height:140px;background:var(--bg2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.char-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,var(--bg) 100%)}
+.char-symbol{font-size:56px;position:relative;z-index:1;filter:drop-shadow(0 0 20px var(--accent,var(--gold-glow)))}
+.char-body{padding:24px 28px 28px}
+.char-domain{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px}
+.char-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:800;letter-spacing:2px;margin-bottom:12px}
+.char-desc{font-size:13px;font-weight:300;line-height:1.8;color:var(--text-dim);margin-bottom:16px}
+.char-quote{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--text-dim);border-left:2px solid var(--border);padding-left:14px;line-height:1.6}
+.char-status{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;padding:4px 10px;border:1px solid;position:absolute;top:12px;right:12px;z-index:2}
+
+/* Detail modal */
+.char-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:40px;overflow-y:auto}
+.char-modal.active{display:flex}
+.char-modal-inner{max-width:650px;width:100%;background:var(--bg2);border:1px solid var(--border-hover);position:relative;max-height:85vh;overflow-y:auto}
+.char-modal-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+.char-modal-banner{height:200px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle at 50% 80%,rgba(255,215,0,.05),transparent 60%)}
+.char-modal-banner .char-symbol{font-size:80px}
+.char-modal-body{padding:32px 40px 40px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-dim);font-size:24px;cursor:pointer;z-index:2;transition:color .3s;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{color:var(--text)}
+.modal-domain{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;margin-bottom:6px;text-transform:uppercase}
+.modal-name{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;letter-spacing:3px;margin-bottom:20px}
+.modal-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.modal-stat{background:var(--surface);padding:14px;border:1px solid var(--border)}
+.modal-stat-label{font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:3px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px}
+.modal-stat-val{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px}
+.modal-lore{font-size:14px;font-weight:300;line-height:2;color:var(--text);margin-bottom:20px}
+.modal-lore strong{color:var(--gold);font-weight:500}
+.modal-lore em{color:var(--cyan)}
+.modal-quote{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--gold);text-align:center;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:24px 0;line-height:1.6}
+.modal-relations{margin-top:20px}
+.modal-relations h4{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-bottom:12px}
+.relation-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:6px 14px;border:1px solid var(--border);margin:4px;color:var(--text-dim);transition:all .3s}
+.relation-tag:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="page-transition" id="pageTransition"></div>
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
+<div class="container-wide">
+  <div class="pg-header rv">
+    <div class="pg-badge gold">PERSONNEL DATABASE</div>
+    <h1 class="pg-title">CHARACTER CODEX</h1>
+    <p class="pg-sub">Every entity, every Avatar, every player in the Chronis multiverse. Click to access full dossier.</p>
+  </div>
+  <div class="codex-grid" id="codexGrid"></div>
+</div>
+
+<div class="char-modal" id="charModal">
+  <div class="char-modal-inner" id="charModalInner"></div>
+</div>
+
+<script>
+const CHARACTERS=[
+  {id:'watson',symbol:'🔎',name:'AMELIA WATSON',domain:'PROTAGONIST',domainColor:'var(--cyan)',status:'ACTIVE',statusColor:'var(--green)',
+   desc:'Time-displaced detective searching for a way to revive Sherry Locke across infinite timelines.',
+   quote:'"I will find a timeline where she lives. Even if I have to build one myself."',
+   lore:'Amelia Watson is the anchor of the Chronis series — the protagonist whose journey connects every game, every timeline, and every fractured reality.\n\nArmed with a pocket watch of unknown origin, she can navigate between timelines independently of The Chronis. This ability is unique and unexplained. Kronii herself cannot read the watch.\n\nShe has visited <strong>2,847 timelines</strong>. Sherry Locke is dead in all of them. But in Timeline ΩΩ-1 — a timeline that doesn\'t exist yet — the readings are different.\n\nSarcastic, resourceful, and <em>haunted by what she\'s lost</em>. She carries the weight of infinite failure and refuses to stop.',
+   bigQuote:'"Every loop is a lesson. Every failure is data. I\'m not giving up — I\'m calibrating."',
+   stats:{Role:'Lead Protagonist',Alignment:'Chaotic Good',Weapon:'Pocket Watch',Status:'Searching'},
+   relations:['Sherry Locke','Kronii','Mumei','Sana','Chaos','The Chronis']},
+  {id:'sherry',symbol:'💀',name:'SHERRY LOCKE',domain:'THE LOST',domainColor:'var(--red)',status:'DECEASED [ALL]',statusColor:'var(--red)',
+   desc:'Dead across every timeline. The weight of her connection to every Amelia collapsed infinity itself.',
+   quote:'"She didn\'t just die. She was erased from possibility itself."',
+   lore:'Sherry Locke was Amelia Watson\'s closest companion across every known reality. Not a romantic partner — something deeper. A <strong>universal constant</strong>. In every timeline where Amelia existed, Sherry existed beside her.\n\nThis was the problem.\n\nThe multiverse could not sustain infinite identical connections. Every Amelia bonded to every Sherry created a paradox of <em>infinite weight</em>. Reality buckled. Infinity collapsed.\n\nSherry was the cost.\n\nBut her frequency remains — a residual signal pulsing at <strong>396 Hz</strong> in the background radiation of all observed timelines. She is not alive. She is not silent. She is <em>resonating</em>.',
+   bigQuote:'"Tell Amelia I heard her. Every version."',
+   stats:{Role:'Catalyst',Status:'Deceased — All Timelines',Signal:'396 Hz Residual',Connection:'Universal Constant'},
+   relations:['Amelia Watson','The Great Coincidence','Timeline ΩΩ-1']},
+  {id:'kronii',symbol:'⏳',name:'KRONII',domain:'AVATAR OF TIME',domainColor:'var(--gold)',status:'MERGED',statusColor:'var(--gold)',
+   desc:'The Warden of Time. Governs the flow of all moments across all realities.',
+   quote:'"I control time, not your life choices."',
+   lore:'Kronii is Time itself — the tick of every clock, the aging of every star, the decay of every empire. She governs the temporal integrity of the multiverse.\n\nHer Core was the <strong>first to be offered</strong> to The Convergence. She understood what it meant before anyone else. Sacrificing individual sovereignty for the stability of all reality.\n\nPersonality: <em>Narcissistic (lovingly), deadpan, savage, perfectionist, perpetually tired.</em>\n\nShe maintains awareness of all temporal anomalies and has expressed growing concern about Watson\'s pocket watch — an artifact that operates on principles that <strong>predate her domain</strong>.',
+   bigQuote:'"Time doesn\'t flow. It vibrates. I am that vibration."',
+   stats:{Domain:'Time',Title:'Warden of Time',Core:'Merged into The Chronis',Frequency:'110 Hz'},
+   relations:['The Chronis','Mumei','Sana','Amelia Watson','Chaos']},
+  {id:'mumei',symbol:'🏛️',name:'MUMEI',domain:'AVATAR OF CIVILIZATION',domainColor:'var(--gold)',status:'MERGED',statusColor:'var(--gold)',
+   desc:'Guardian of Civilization. The memory of every society that ever rose or fell.',
+   quote:'"I remember everything that mattered. I just forget who I am."',
+   lore:'Mumei is the collective memory of <strong>every civilization</strong> — every fire lit, every city built, every empire that crumbled to dust.\n\nHer Core carries the weight of sapient history. Every idea, every invention, every act of creation and destruction.\n\nBut memory is a burden. She remembers the exact moment every civilization chose to destroy itself, yet sometimes <em>forgets her own name</em>.\n\nHer contribution to The Convergence was the most emotionally complex — she didn\'t just sacrifice power. She sacrificed <strong>the memory of what power felt like</strong>.',
+   bigQuote:'"Civilizations don\'t fall. They forget why they stood."',
+   stats:{Domain:'Civilization',Title:'Guardian of Civilization',Core:'Merged into The Chronis',Burden:'Collective Memory'},
+   relations:['The Chronis','Kronii','Sana','Amelia Watson']},
+  {id:'sana',symbol:'🌌',name:'SANA',domain:'AVATAR OF SPACE',domainColor:'var(--cyan)',status:'MERGED',statusColor:'var(--gold)',
+   desc:'Keeper of Space. The infinite canvas upon which all of reality is drawn.',
+   quote:'"The universe is so big. And I\'m all of it."',
+   lore:'Sana is Space itself — every star, every void, every distance between two points. The infinite canvas upon which reality paints existence.\n\nHer Core was the <strong>largest of all Avatar fragments</strong>. When it merged into The Chronis, the universe briefly contracted — as if reality itself flinched.\n\nShe sees everything at once. Every galaxy, every atom, every hidden corner of every dimension. It is beautiful. And <em>overwhelming</em>.\n\nUnlike Kronii\'s focused governance, Sana\'s domain is passive — she doesn\'t control space, she <strong>is</strong> space. Her sacrifice in The Convergence was total.',
+   bigQuote:'"Distance is an illusion. Everything is touching everything else. You just can\'t feel it."',
+   stats:{Domain:'Space',Title:'Keeper of Space',Core:'Merged (Largest Fragment)',Scale:'Infinite'},
+   relations:['The Chronis','Kronii','Mumei','The Convergence']},
+  {id:'chaos',symbol:'🌀',name:'CHAOS',domain:'THE UNBOUND',domainColor:'var(--red)',status:'IDLE',statusColor:'var(--red)',
+   desc:'The one force The Chronis cannot control. Indifferent, amused, and impossible to predict.',
+   quote:'"Nothing. I just think it\'s funny."',
+   lore:'Chaos is not a villain. Chaos is not an ally. Chaos simply <em>is</em>.\n\nShe exists outside the framework of order, reality, and reason that The Chronis governs. She was not part of The Convergence. She was not invited. She wouldn\'t have come anyway.\n\nShe cannot be controlled, predicted, or contained. She pokes holes in timelines for fun. She watches Watson search for Sherry with what might be sympathy, or might be entertainment. With Chaos, you can\'t tell.\n\nKronii describes her as <em>"annoyingly omnipresent"</em> and <em>"the reason I have headaches across four timelines simultaneously."</em>',
+   bigQuote:'"Rules are suggestions. Physics is a hobby. Reality is a rough draft. I\'m the editor."',
+   stats:{Domain:'None (Unbound)',Threat:'Undefined',Allegiance:'None',Frequency:'741 Hz (Unstable)'},
+   relations:['The Chronis','Kronii','Amelia Watson','Everyone (involuntarily)']},
+  {id:'watcher',symbol:'👁️',name:'THE WATCHER',domain:'HOSTILE ENTITY',domainColor:'var(--red)',status:'HUNTING',statusColor:'var(--red)',
+   desc:'A consequence of temporal damage. It patrols. It remembers. It cannot be killed.',
+   quote:'"It sees you. It always sees you."',
+   lore:'The Watcher is the primary antagonist of <strong>Case 404: The Watson Incident</strong>. It is not a creature, ghost, or demon. It is a <em>consequence</em>.\n\nWatson\'s repeated time loops in a single location caused structural damage to that reality. The Watcher is the manifestation of that damage — reality\'s immune response to a foreign presence.\n\nEvery time Watson loops, it gets stronger. Every time the building resets, <strong>it remembers more</strong>.\n\nIt patrols the shifting apartment building, drawn to sound and movement. It cannot be killed. Only avoided.\n\nIt is growing smarter.',
+   bigQuote:'"You can hide. But you can\'t hide from what you\'ve already broken."',
+   stats:{Origin:'Case 404 Anomaly',Type:'Temporal Consequence',Threat:'EXTREME',Weakness:'None Known'},
+   relations:['Amelia Watson','Case 404','The Apartment']},
+  {id:'chronis-entity',symbol:'⏱️',name:'THE CHRONIS',domain:'ARTIFACT / ENTITY',domainColor:'var(--gold-bright)',status:'OBSERVING',statusColor:'var(--gold)',
+   desc:'The merged Cores of all Avatars. The center of all realities. It watches. It waits.',
+   quote:'"The Chronis observes. The Chronis waits. The Chronis remembers."',
+   lore:'When the Avatars merged their Cores — fragments of Time, Space, Civilization, and every other pillar of existence — into a single object, The Chronis was born.\n\nIt is simultaneously an <strong>artifact</strong> and an <strong>entity</strong>. It has awareness but not personality. It has power but chooses restraint. It governs all realities, all timelines, all dimensions.\n\n<em>All except Chaos.</em>\n\nThe Chronis hums at <strong>55 Hz</strong> — the base frequency of reality itself. It does not intervene unless the balance demands it. Watson\'s search for Sherry has not yet triggered intervention.\n\nBut the hum is getting louder.',
+   bigQuote:'"It was not created. It was inevitable."',
+   stats:{Type:'Merged Avatar Cores',Power:'Absolute (minus Chaos)',Frequency:'55 Hz',Status:'Observing'},
+   relations:['Kronii','Mumei','Sana','Amelia Watson','Chaos','All Realities']},
+];
+
+const grid=document.getElementById('codexGrid');
+CHARACTERS.forEach((c,i)=>{
+  const card=document.createElement('div');
+  card.className='char-card rv rv-d'+(Math.min(i%4+1,4));
+  card.style.setProperty('--accent',c.domainColor);
+  card.innerHTML=`
+    <div class="char-banner"><span class="char-symbol">${c.symbol}</span></div>
+    <span class="char-status" style="color:${c.statusColor};border-color:${c.statusColor}">${c.status}</span>
+    <div class="char-body">
+      <div class="char-domain" style="color:${c.domainColor}">${c.domain}</div>
+      <div class="char-name">${c.name}</div>
+      <div class="char-desc">${c.desc}</div>
+      <div class="char-quote">${c.quote}</div>
+    </div>`;
+  card.onclick=()=>openChar(c);
+  grid.appendChild(card);
+});
+
+function openChar(c){
+  const m=document.getElementById('charModal');
+  const inner=document.getElementById('charModalInner');
+  let statsHTML='';
+  for(const[k,v] of Object.entries(c.stats)){
+    statsHTML+=`<div class="modal-stat"><div class="modal-stat-label">${k}</div><div class="modal-stat-val" style="color:${c.domainColor}">${v}</div></div>`;
+  }
+  let relHTML=c.relations.map(r=>`<span class="relation-tag">${r}</span>`).join('');
+  inner.innerHTML=`
+    <button class="modal-close" onclick="closeChar()">✕</button>
+    <div class="char-modal-banner" style="background:radial-gradient(circle at 50% 80%,${c.domainColor.replace(')',',0.08)')},transparent 60%)">
+      <span class="char-symbol">${c.symbol}</span>
+    </div>
+    <div class="char-modal-body">
+      <div class="modal-domain" style="color:${c.domainColor}">${c.domain}</div>
+      <h2 class="modal-name">${c.name}</h2>
+      <div class="modal-stats">${statsHTML}</div>
+      <div class="modal-lore">${c.lore.replace(/\n/g,'<br><br>')}</div>
+      <div class="modal-quote">${c.bigQuote}</div>
+      <div class="modal-relations"><h4>CONNECTIONS</h4>${relHTML}</div>
+    </div>`;
+  m.classList.add('active');
+}
+function closeChar(){document.getElementById('charModal').classList.remove('active')}
+document.getElementById('charModal').addEventListener('click',e=>{if(e.target===document.getElementById('charModal'))closeChar()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeChar()});
+</script>
+<script src="shared.js"></script>
+</body>
+</html>

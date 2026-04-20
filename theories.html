@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONIS — Community Theories</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.theory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:48px}
+.theory-card{background:var(--surface);border:1px solid var(--border);padding:28px;backdrop-filter:blur(8px);transition:all .4s;position:relative}
+.theory-card:hover{border-color:var(--border-hover);transform:translateY(-4px)}
+.theory-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.theory-card:hover::before{opacity:1}
+.theory-author{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cyan);margin-bottom:12px}
+.theory-title{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:12px}
+.theory-body{font-size:13px;font-weight:300;line-height:1.9;color:var(--text-dim)}
+.theory-body strong{color:var(--gold);font-weight:500}
+.theory-body em{color:var(--cyan)}
+.theory-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;padding:4px 10px;border:1px solid var(--text-muted);color:var(--text-muted);margin-top:16px;display:inline-block}
+.theory-card.featured{border-color:var(--gold-dim)}
+.theory-card.featured .theory-tag{border-color:var(--gold);color:var(--gold)}
+.submit-section{text-align:center;margin-top:64px;padding:48px;background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(8px)}
+.submit-section h3{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold);margin-bottom:12px}
+.submit-section p{font-size:13px;color:var(--text-dim);font-weight:300;margin-bottom:24px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="page-transition" id="pageTransition"></div>
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
+<div class="container-wide">
+  <div class="pg-header rv">
+    <div class="pg-badge">COMMUNITY INTEL</div>
+    <h1 class="pg-title">THEORIES</h1>
+    <p class="pg-sub">The community's best theories about the Chronis multiverse. Some are close to the truth. Some are closer than we'd like.</p>
+  </div>
+
+  <!--
+    ====================================
+    HOW TO ADD THEORIES:
+    Add a new theory-card div to the
+    theory-grid below. Add class "featured"
+    for highlighted theories.
+    ====================================
+  -->
+
+  <div class="theory-grid">
+    <div class="theory-card featured rv">
+      <div class="theory-author">@TIMEBORNE_OFFICIAL</div>
+      <div class="theory-title">THE WATCH PREDATES THE CHRONIS</div>
+      <div class="theory-body">Watson's pocket watch doesn't come from The Chronis. It <strong>predates it</strong>. If The Chronis controls all of reality but can't read the watch, then the watch operates on rules from <em>before reality had rules</em>. What if the watch is from whatever existed before The Convergence? Before the Avatars?</div>
+      <span class="theory-tag">FEATURED THEORY</span>
+    </div>
+
+    <div class="theory-card rv rv-d1">
+      <div class="theory-author">@COMMUNITY</div>
+      <div class="theory-title">SHERRY IS BUILDING ΩΩ-1</div>
+      <div class="theory-body">The residual frequency at 396 Hz isn't just an echo — it's <strong>construction noise</strong>. Sherry isn't dead. She's been disassembled across all timelines and she's using the energy of every Amelia who remembers her to <em>build a new timeline from scratch</em>.</div>
+      <span class="theory-tag">POPULAR</span>
+    </div>
+
+    <div class="theory-card rv rv-d2">
+      <div class="theory-author">@COMMUNITY</div>
+      <div class="theory-title">CHAOS KNOWS WHERE SHERRY IS</div>
+      <div class="theory-body">Chaos exists outside The Chronis's framework. She can see things The Chronis can't. Her "amusement" isn't cruelty — it's because she <strong>already knows how the story ends</strong> and she's watching Watson figure it out the long way. She's not a villain. She's a spoiler.</div>
+      <span class="theory-tag">DEBATED</span>
+    </div>
+
+    <div class="theory-card rv rv-d3">
+      <div class="theory-author">@COMMUNITY</div>
+      <div class="theory-title">THE GREAT COINCIDENCE WAS INTENTIONAL</div>
+      <div class="theory-body">What if infinity didn't "collapse" accidentally? What if <strong>The Chronis itself</strong> caused The Great Coincidence to force Watson into searching for ΩΩ-1? The Chronis observes. It waits. What if it's been <em>steering events</em> this entire time?</div>
+      <span class="theory-tag">CONTROVERSIAL</span>
+    </div>
+
+    <div class="theory-card rv rv-d4">
+      <div class="theory-author">@COMMUNITY</div>
+      <div class="theory-title">THE WATCHER IS A FUTURE WATSON</div>
+      <div class="theory-body">In Case 404, The Watcher gets stronger with every loop — and it <em>remembers</em>. What if The Watcher isn't a temporal consequence but a <strong>version of Watson</strong> who looped too many times? A Watson who forgot she was Watson?</div>
+      <span class="theory-tag">WILD</span>
+    </div>
+
+    <div class="theory-card rv rv-d1">
+      <div class="theory-author">@COMMUNITY</div>
+      <div class="theory-title">NEUROTICISM IS WATSON'S MINDSCAPE</div>
+      <div class="theory-body">The game "Neuroticism" — <em>"the mind is just another dimension to break"</em> — isn't about a random consciousness. It's <strong>Watson's mind</strong>. After 2,847 timelines of failure, her psyche is fracturing. Neuroticism is the game where you explore what's left.</div>
+      <span class="theory-tag">SPECULATION</span>
+    </div>
+  </div>
+
+  <div class="submit-section rv">
+    <h3>SUBMIT YOUR THEORY</h3>
+    <p>Think you've cracked the Chronis code? Drop your theory in the Discord and tag it #theories. The best ones get featured here.</p>
+    <a href="https://discord.com/invite/chronis" target="_blank" class="btn btn-discord">SUBMIT ON DISCORD</a>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+</body>
+</html>

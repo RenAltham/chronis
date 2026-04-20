@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONIS — Choose Your Timeline</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.story-container{max-width:650px;margin:0 auto;padding:100px 24px 60px;min-height:100vh}
+.story-box{background:var(--surface);border:1px solid var(--border);padding:40px;backdrop-filter:blur(8px);animation:fade-story .6s}
+@keyframes fade-story{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.story-location{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--cyan);margin-bottom:8px;text-transform:uppercase}
+.story-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:800;letter-spacing:3px;color:var(--gold);margin-bottom:20px}
+.story-text{font-size:15px;font-weight:300;line-height:2.2;color:var(--text);margin-bottom:32px}
+.story-text em{color:var(--cyan)}.story-text strong{color:var(--gold);font-weight:500}
+.choice-btn{display:block;width:100%;text-align:left;padding:18px 24px;margin-bottom:10px;background:rgba(255,215,0,.02);border:1px solid var(--border);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;font-weight:300;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.choice-btn:hover{border-color:var(--gold);padding-left:32px;background:rgba(255,215,0,.05)}
+.choice-btn::before{content:'▸';position:absolute;left:12px;color:var(--gold);opacity:0;transition:opacity .3s}
+.choice-btn:hover::before{opacity:1}
+.story-ending{text-align:center;padding:20px 0}
+.ending-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--red);margin-bottom:16px}
+.ending-code{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--green);margin-top:24px;padding:16px;border:1px dashed var(--green);display:inline-block}
+.restart-btn{display:inline-block;margin-top:24px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;padding:12px 28px;border:1px solid var(--text-muted);color:var(--text-dim);cursor:pointer;transition:all .3s;background:none}
+.restart-btn:hover{border-color:var(--gold);color:var(--gold)}
+.progress-dots{display:flex;justify-content:center;gap:8px;margin-bottom:32px}
+.prog-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--text-muted);transition:all .3s}
+.prog-dot.active{background:var(--gold);border-color:var(--gold)}
+.prog-dot.past{background:var(--text-muted);border-color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
+<div class="story-container">
+  <div class="pg-header">
+    <div class="pg-badge red">INTERACTIVE</div>
+    <h1 class="pg-title" style="font-size:clamp(24px,5vw,36px)">CHOOSE YOUR TIMELINE</h1>
+    <p class="pg-sub">Your choices shape the path. Each ending reveals a unique dossier code.</p>
+  </div>
+  <div id="storyArea"></div>
+</div>
+
+<script>
+const NODES={
+  start:{loc:'TIMELINE ZERO',title:'THE JUNCTION',text:'You stand at the center of all realities. The Chronis hums around you — a low, persistent vibration that you feel in your bones.\n\nThree paths branch outward. Each leads to a different fracture in the multiverse. Each carries risk.\n\nA voice — <em>Watson\'s voice</em> — echoes from somewhere between the timelines:\n\n<strong>"Choose carefully. Not all paths lead back."</strong>',choices:[{text:'Follow the golden thread toward Timeline ΔΔ-0',next:'golden'},{text:'Step into the static — the unstable rift',next:'static'},{text:'Walk toward the silence where nothing broadcasts',next:'silence'}]},
+  golden:{loc:'TIMELINE ΔΔ-0',title:'THE ORIGIN',text:'You arrive at Timeline Zero — the trunk of the tree from which all realities branch.\n\nThe air is still here. Clean. The Chronis\'s influence is strongest at the point of origin.\n\nYou find Watson\'s workstation. Notes scattered everywhere. Equations. Diagrams. Photographs of someone you don\'t recognize — but the word <strong>"SHERRY"</strong> is written in every margin.\n\nOn the desk: a recording device, still warm.',choices:[{text:'Play the recording',next:'recording'},{text:'Read the equations on the wall',next:'equations'}]},
+  static:{loc:'THE RIFT',title:'BETWEEN TIMELINES',text:'The rift tears at your senses. Colors that shouldn\'t exist bleed together. Sound arrives before its source.\n\nYou see fragments of other realities overlapping — a city burning in one layer, a garden blooming in another, and in the deepest layer, <em>a girl standing perfectly still, watching you</em>.\n\nShe mouths a word. You can\'t hear it.\n\nThe rift is unstable. You have seconds.',choices:[{text:'Reach toward the girl',next:'reach'},{text:'Stabilize the rift and observe',next:'observe'}]},
+  silence:{loc:'TIMELINE ΩΩ-1',title:'THE UNWRITTEN',text:'There is nothing here.\n\nNot darkness — <em>nothing</em>. No space. No time. No reference point.\n\nBut you can hear something. Faint. A frequency. A heartbeat.\n\n<strong>396 Hz.</strong>\n\nSherry\'s resonance.\n\nIt\'s stronger here than anywhere else in the multiverse. And it\'s <em>building</em>. Like something is being constructed from the sound itself.',choices:[{text:'Follow the frequency deeper',next:'deeper'},{text:'Try to broadcast back',next:'broadcast'}]},
+  recording:{loc:'TIMELINE ΔΔ-0',title:'WATSON\'S LOG',text:'The recording plays.\n\n<strong>"Log 2,847. I found something in ΩΩ-1. It\'s not a timeline yet — it\'s a... blueprint. Like someone left instructions for how to build a reality from scratch.</strong>\n\n<strong>The instructions are in Sherry\'s handwriting."</strong>\n\nThe recording ends. Static. Then one more sentence, barely audible:\n\n<em>"She\'s not waiting for me. She\'s building the way back herself."</em>',choices:[],ending:{label:'ENDING A — THE BLUEPRINT',code:'BLUEPRINTFOUND'}},
+  equations:{loc:'TIMELINE ΔΔ-0',title:'THE WALL',text:'The equations are beyond comprehension. But one phrase is circled in red, over and over:\n\n<strong>"Convergence is not creation. It is reunion."</strong>\n\nBelow it, a note in different handwriting — sharper, more precise. Kronii\'s.\n\n<em>"Watson doesn\'t understand yet. The Chronis wasn\'t made. It was always going to exist. And so was ΩΩ-1.\n\nSome timelines don\'t need to be found. They need to be remembered."</em>',choices:[],ending:{label:'ENDING B — THE REMEMBERING',code:'REMEMBERHER'}},
+  reach:{loc:'THE RIFT',title:'CONTACT',text:'Your hand passes through the layers of reality. The girl\'s eyes widen. She reaches back.\n\nYour fingers touch.\n\nFor one instant, you feel <em>everything</em> — every timeline, every version of every person, every moment that ever was or could be. The weight is unbearable. Beautiful. Crushing.\n\nThe girl whispers. This time you hear it.\n\n<strong>"Tell her I\'m almost done."</strong>\n\nThe rift collapses. You\'re back at Timeline Zero. Alone. But the message burns in your memory.',choices:[],ending:{label:'ENDING C — THE MESSAGE',code:'ALMOSTDONE'}},
+  observe:{loc:'THE RIFT',title:'THE OBSERVER',text:'You stabilize the rift and watch. The layers settle into patterns.\n\nYou see Watson in one layer — jumping between realities. In another, Kronii maintaining temporal integrity alone, exhausted. In another, Chaos sitting on a rooftop, watching everything with a sad smile you\'ve never seen before.\n\nAnd in the deepest layer: <strong>The Chronis itself</strong>. Not as an object — as a <em>feeling</em>. A hum that holds everything together.\n\nIt notices you watching.\n\nIt hums louder.\n\n<em>You are remembered.</em>',choices:[],ending:{label:'ENDING D — THE OBSERVER',code:'YOUAREREMEMBERED'}},
+  deeper:{loc:'TIMELINE ΩΩ-1',title:'THE CONSTRUCTION',text:'You follow the frequency. With each step, reality solidifies around you.\n\nFirst: ground. Then: sky. Then: air.\n\nA timeline is being built. Brick by brick. Memory by memory.\n\nEvery Amelia who remembers Sherry is a brick. Every timeline that carries her frequency is mortar.\n\nAt the center of this unfinished reality, you find a door. Half-built. No handle on this side.\n\nBut on the other side — you can hear someone building.',choices:[],ending:{label:'ENDING E — THE DOOR',code:'DOORSBOTHWAYS'}},
+  broadcast:{loc:'TIMELINE ΩΩ-1',title:'THE RESPONSE',text:'You broadcast on 396 Hz. Your voice. Your presence. A signal into the void.\n\nSilence.\n\nThen — a response. Not in words. In <em>feeling</em>. Warmth. Recognition. Gratitude.\n\nSomeone heard you. Someone in a place that doesn\'t exist yet heard you reach out, and for one moment, the nothing became <em>something</em>.\n\nThe frequency stabilizes. Strengthens. Your broadcast became a foundation stone.\n\n<strong>You just helped build Timeline ΩΩ-1.</strong>',choices:[],ending:{label:'ENDING F — THE FOUNDATION',code:'FOUNDATIONSTONE'}},
+};
+
+let history=[];
+function renderNode(id){
+  history.push(id);
+  const node=NODES[id];
+  const area=document.getElementById('storyArea');
+  let dotsHTML='<div class="progress-dots">';
+  for(let i=0;i<history.length;i++){
+    dotsHTML+=`<div class="prog-dot ${i<history.length-1?'past':'active'}"></div>`;
+  }
+  dotsHTML+='</div>';
+  let html=dotsHTML+`<div class="story-box"><div class="story-location">${node.loc}</div><h2 class="story-title">${node.title}</h2><div class="story-text">${node.text.replace(/\n/g,'<br>')}</div>`;
+  if(node.ending){
+    html+=`<div class="story-ending"><div class="ending-label">${node.ending.label}</div><div class="ending-code">DOSSIER CODE: ${node.ending.code}</div><br><button class="restart-btn" onclick="restart()">RESTART FROM TIMELINE ZERO</button></div>`;
+  } else {
+    node.choices.forEach(c=>{
+      html+=`<button class="choice-btn" onclick="renderNode('${c.next}')">${c.text}</button>`;
+    });
+  }
+  html+='</div>';
+  area.innerHTML=html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function restart(){history=[];renderNode('start')}
+renderNode('start');
+</script>
+<script src="shared.js"></script>
+</body>
+</html>

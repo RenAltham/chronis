@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONIS — ???</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.locked-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px}
+.locked-icon{font-size:64px;margin-bottom:24px;opacity:.3}
+.locked-title{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;letter-spacing:4px;color:var(--text-muted);margin-bottom:12px}
+.locked-sub{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--text-muted);line-height:2}
+.locked-time{font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:var(--red);margin:24px 0;animation:blink-slow 2s infinite}
+@keyframes blink-slow{0%,80%,100%{opacity:1}90%{opacity:.3}}
+.unlocked-screen{display:none;min-height:100vh;padding:80px 24px;max-width:700px;margin:0 auto}
+.unlocked-screen.show{display:block}
+.witching-header{text-align:center;margin-bottom:48px}
+.witching-title{font-family:'Orbitron',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:900;letter-spacing:4px;color:var(--red);animation:glitch-red 5s infinite}
+@keyframes glitch-red{0%,93%,100%{text-shadow:none}94%{text-shadow:-3px 0 var(--cyan),3px 0 var(--red)}96%{text-shadow:3px 0 var(--gold),-3px 0 var(--red)}}
+.witching-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:3px;margin-top:8px}
+.transmission{background:rgba(255,45,85,.03);border:1px solid rgba(255,45,85,.15);padding:28px;margin-bottom:20px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--text-dim)}
+.transmission .speaker{color:var(--red);font-weight:700}
+.transmission .corrupted{color:var(--text-muted);font-style:italic}
+.transmission .important{color:var(--gold)}
+.final-code{text-align:center;margin-top:48px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:3px;animation:blink-slow 3s infinite}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a href="index.html" class="back-btn"><span class="arrow">←</span> CHRONIS</a>
+
+<div class="locked-screen" id="lockedScreen">
+  <div class="locked-icon">🔒</div>
+  <div class="locked-title">TIME-LOCKED</div>
+  <div class="locked-sub">This page only opens during the witching hour.<br>Come back between 3:00 AM and 4:00 AM.</div>
+  <div class="locked-time" id="currentTime">--:--</div>
+  <div class="locked-sub" style="margin-top:16px;opacity:.3">Your local time.</div>
+</div>
+
+<div class="unlocked-screen" id="unlockedScreen">
+  <div class="witching-header">
+    <div class="witching-title">THE WITCHING HOUR</div>
+    <div class="witching-sub">3:00 AM — TEMPORAL BARRIERS WEAKENED</div>
+  </div>
+
+  <div class="transmission">
+    <span class="speaker">[INTERCEPTED — 03:00:00]</span><br><br>
+    The barriers between timelines are thinnest at 3 AM. Always have been. The Chronis hums louder. Watson's watch spins faster. And Chaos... Chaos goes quiet.<br><br>
+    That's how you know something is wrong. When Chaos stops laughing.
+  </div>
+
+  <div class="transmission">
+    <span class="speaker">[WATSON — 03:17:42]</span><br><br>
+    <span class="important">"I can hear her at 3 AM. Every night. Same time. Same frequency.</span><br><br>
+    It's not words. It's more like... a feeling. Like someone pressing their hand against glass from the other side. She's there. In the space between timelines.<br><br>
+    The watch does something at this hour that it doesn't do any other time. The hands move in a pattern I've never seen. Like it's trying to show me coordinates to a place that doesn't exist yet."
+  </div>
+
+  <div class="transmission">
+    <span class="speaker">[KRONII — 03:33:33]</span><br><br>
+    "I hate this hour. Time doesn't behave. It folds. Loops. Runs sideways.<br><br>
+    Watson thinks she can use this window to reach ΩΩ-1. She might be right. The temporal resistance drops by <span class="important">94.7%</span> between 3:00 and 3:59.<br><br>
+    But what comes through isn't always what you expect. Sometimes the timelines bleed. And what bleeds through...<br><br>
+    <span class="corrupted">[TRANSMISSION INTERRUPTED]</span>
+  </div>
+
+  <div class="transmission">
+    <span class="speaker">[UNKNOWN SOURCE — 03:47:11]</span><br><br>
+    <span class="corrupted">she's building the door</span><br>
+    <span class="corrupted">from the inside</span><br>
+    <span class="corrupted">brick by brick</span><br>
+    <span class="corrupted">memory by memory</span><br><br>
+    <span class="important">every amelia who remembers her is a brick</span><br>
+    <span class="important">every timeline that carries her frequency is mortar</span><br><br>
+    <span class="corrupted">the door is almost finished</span><br>
+    <span class="corrupted">but doors open both ways</span>
+  </div>
+
+  <div class="final-code">DOSSIER CODE: WITCHINGHOUR</div>
+</div>
+
+<script>
+function checkTime(){
+  const h=new Date().getHours();
+  const m=new Date().getMinutes();
+  document.getElementById('currentTime').textContent=
+    String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  if(h===3){
+    document.getElementById('lockedScreen').style.display='none';
+    document.getElementById('unlockedScreen').classList.add('show');
+  }
+}
+checkTime();setInterval(checkTime,10000);
+// Secret: typing "3am" unlocks it regardless of time
+let keys='';
+document.addEventListener('keydown',e=>{
+  keys+=e.key.toLowerCase();
+  if(keys.includes('3am')||keys.includes('witching')){
+    document.getElementById('lockedScreen').style.display='none';
+    document.getElementById('unlockedScreen').classList.add('show');
+  }
+  if(keys.length>20)keys=keys.slice(-10);
+});
+</script>
+</body>
+</html>
